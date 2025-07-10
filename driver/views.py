@@ -11,7 +11,10 @@ def driver_dashboard(request):
 
 @login_required
 def driver_profile(request):
-    profile = get_object_or_404(DriverProfile, user=request.user)
+    try:
+        profile = DriverProfile.objects.get(user=request.user)
+    except DriverProfile.DoesNotExist:
+        return redirect('driver:create_profile')
     return render(request, 'driver/profile.html', {'profile': profile})
 
 
@@ -33,5 +36,21 @@ def create_driver_profile(request):
     return render(request, 'driver/create_profile.html', {'form': form})
 
 
-def test_page(request):
-    return render(request, 'base.html')
+@login_required
+def edit_driver_profile(request):
+    try:
+        profile = DriverProfile.objects.get(user=request.user)
+    except DriverProfile.DoesNotExist:
+        profile = None
+
+    if request.method == 'POST':
+        form = DriverProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('driver:profile')
+    else:
+        form = DriverProfileForm(instance=profile)
+
+    return render(request, 'driver/edit_profile.html', {'form': form})
