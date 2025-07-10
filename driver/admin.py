@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import DriverProfile
 
-# Register your models here.
+@admin.register(DriverProfile)
+class DriverProfileAdmin(admin.ModelAdmin):
+    list_display = ('full_name', 'user', 'phone_number', 'license_number')
