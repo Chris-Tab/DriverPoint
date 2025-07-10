@@ -19,8 +19,9 @@ from django.urls import path, include
 from driver.views import test_page
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', test_page, name='test'),
+    path('admin/', admin.site.urls),    
     path('accounts/', include('accounts.urls')),
+    path('driver/', include('driver.urls')),
+    path('', test_page, name='test'),
 
 ]

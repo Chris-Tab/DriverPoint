@@ -6,6 +6,7 @@ from .forms import EmailLoginForm
 from django.views.generic.edit import CreateView
 from .forms import CustomUserCreationForm
 from django.contrib.auth import get_user_model
+
 user = get_user_model()
 
 class LoginView(BaseLoginView):
