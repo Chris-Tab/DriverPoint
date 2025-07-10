@@ -1,13 +1,14 @@
 from django.shortcuts import render
-
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.urls import reverse_lazy
-from .forms import EmailLoginForm
 from django.views.generic.edit import CreateView
-from .forms import CustomUserCreationForm
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
-user = get_user_model()
+from .forms import EmailLoginForm, CustomUserCreationForm
+
+User = get_user_model()
+
 
 class LoginView(BaseLoginView):
     form_class = EmailLoginForm
@@ -18,12 +19,17 @@ class LoginView(BaseLoginView):
         if user.role == 'driver':
             return reverse_lazy('driver:dashboard')
         elif user.role == 'company':
-            return reverse_lazy('company:dashboard')
+            return reverse_lazy('accounts:dashboard')
         else:
-            return reverse_lazy('admin:index')  # default to admin panel
+            return reverse_lazy('admin:index')
 
 
 class RegisterView(CreateView):
     form_class = CustomUserCreationForm
     template_name = 'accounts/register.html'
     success_url = reverse_lazy('accounts:login')
+
+
+@login_required
+def company_dashboard(request):
+    return render(request, 'accounts/dashboard.html')
